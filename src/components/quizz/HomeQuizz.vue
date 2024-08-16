@@ -1,11 +1,11 @@
 <script setup>
 import { ref, inject, onMounted, computed } from "vue";
 import { listPeople } from "../../service/module/people";
-import Film from "../../service/module/film";
-import planet from "../../service/module/planet";
-import Specie from "../../service/module/specie";
-import Vehicle from "../../service/module/vehicle";
-import Starship from "../../service/module/starship";
+import { listFilm } from "../../service/module/film";
+import { listPlanet } from "../../service/module/planet";
+import { listSpecies } from "../../service/module/specie";
+import { listVehicle } from "../../service/module/vehicle";
+import { listStarship } from "../../service/module/starship";
 
 const tabCategories = ref();
 tabCategories.value = [
@@ -43,7 +43,7 @@ async function getRandomElement(funclist, count) {
     randomIndex = Math.floor(Math.random() * 9) + 1;
   }
   let page = 0;
-  if (funclist != Film.listFilm) {
+  if (funclist != listFilm) {
     page = await funclist(randomPage);
   } else {
     page = await funclist();
@@ -58,7 +58,7 @@ async function getRandomElement(funclist, count) {
       object["url"].substr(object["url"].length - 3, object["url"].length - 2)
     );
   }
-  if (funclist != Film.listFilm) {
+  if (funclist != listFilm) {
     randomPickup.value = { id: id, name: object["name"] };
   } else {
     randomPickup.value = { id: id, name: object["title"] };
@@ -88,15 +88,15 @@ async function StartGame() {
   if (category.value === "people") {
     await generatElement(listPeople);
   } else if (category.value === "films") {
-    await generatElement(Film.listFilm);
+    await generatElement(listFilm);
   } else if (category.value === "planets") {
-    await generatElement(planet.listPlanet);
+    await generatElement(listPlanet);
   } else if (category.value === "species") {
-    await generatElement(Specie.listSpecie);
+    await generatElement(listSpecies);
   } else if (category.value === "vehicles") {
-    await generatElement(Vehicle.listVehicle);
+    await generatElement(listVehicle);
   } else if (category.value === "starships") {
-    await generatElement(Starship.listStarship);
+    await generatElement(listStarship);
   }
 }
 </script>

@@ -1,17 +1,17 @@
 <script setup>
 import CardSpecie from "./CardSpecie.vue";
 import { ref, onMounted, computed } from "vue";
-import Specie from "../../service/module/specie";
+import { listSpecies } from "../../service/module/specie";
 import Carrousel from "../carrousel/index.vue";
 import Slide from "../carrousel/Slide.vue";
 let species = ref(null);
 let count = ref(null);
 onMounted(async () => {
-  let data = await Specie.listSpecie();
+  let data = await listSpecies();
   count.value = data?.data.count;
   species.value = data.data.results;
-  let tab1 = await Specie.listSpecie(2);
-  let tab2 = await Specie.listSpecie(2);
+  let tab1 = await listSpecies(2);
+  let tab2 = await listSpecies(2);
   species.value = species.value.concat(tab1.data.results, tab2.data.results);
 });
 const page = ref(0);
@@ -79,21 +79,10 @@ function getChangeSlide(slide) {
   </div> -->
 
   <div>
-    <Carrousel
-      v-slot="{ currentSlide }"
-      :getSlideCount="nbSlide"
-      @changeSlide="getChangeSlide"
-    >
+    <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
       <Slide v-for="n in nbSlide" :key="n">
-        <div
-          class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center"
-          v-show="currentSlide === n - 1"
-        >
-          <CardSpecie
-            v-for="specie in showSpecie"
-            :key="specie"
-            :spec="specie"
-          ></CardSpecie>
+        <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
+          <CardSpecie v-for="specie in showSpecie" :key="specie" :spec="specie"></CardSpecie>
         </div>
       </Slide>
     </Carrousel>

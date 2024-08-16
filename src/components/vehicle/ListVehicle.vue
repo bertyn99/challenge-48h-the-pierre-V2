@@ -1,7 +1,7 @@
 <script setup>
 import CardVehicle from "./CardVehicle.vue";
 import { ref, onMounted, computed } from "vue";
-import Vehicle from "../../service/module/vehicle";
+import { listVehicle } from "../../service/module/vehicle";
 import Carrousel from "../carrousel/index.vue";
 import Slide from "../carrousel/Slide.vue";
 let vehicles = ref(null);
@@ -19,11 +19,11 @@ async function loadPages(ressource, count, api) {
   ressource.value = ressource.value.concat(temp);
 }
 onMounted(async () => {
-  let data = await Vehicle.listVehicle();
+  let data = await listVehicle();
   vehicles.value = data.data.results;
   countElm.value = data?.data.count;
 
-  await loadPages(vehicles, countElm, Vehicle.listVehicle);
+  await loadPages(vehicles, countElm, listVehicle);
 });
 const showVehicles = computed(() => {
   if (page.value == 0) return vehicles.value?.slice(page, 10);
@@ -41,25 +41,12 @@ function clickeOnPeople(idEntered) {
 </script>
 
 <template>
-  <Carrousel
-    v-slot="{ currentSlide }"
-    :getSlideCount="nbSlide"
-    @changeSlide="getChangeSlide"
-  >
+  <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
     <Slide v-for="n in nbSlide" :key="n">
-      <div
-        class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center"
-        v-show="currentSlide === n - 1"
-      >
-        <CardVehicle
-          v-for="vehi in showVehicles"
-          :key="vehi"
-          :vehicle="vehi"
-          :pageNumber="pageNumber"
-          @click="
-            clickeOnPeople(vehi.url.split('/')[vehi.url.split('/').length - 2])
-          "
-        ></CardVehicle>
+      <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
+        <CardVehicle v-for="vehi in showVehicles" :key="vehi" :vehicle="vehi" :pageNumber="pageNumber" @click="
+          clickeOnPeople(vehi.url.split('/')[vehi.url.split('/').length - 2])
+          "></CardVehicle>
       </div>
     </Slide>
   </Carrousel>

@@ -3,15 +3,9 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import { ref, onMounted } from "vue";
 import Vehicle from "../components/vehicle/CardVehicle.vue";
-import vehicle from "../service/module/vehicle";
-import ListVehicle from "../components/vehicle/ListVehicle.vue";
-let OneVehicle = ref(null);
-onMounted(async () => {
-  let i = 4;
 
-  let data = await vehicle.getVehicleById(i);
-  OneVehicle.value = data.data;
-});
+import ListVehicle from "../components/vehicle/ListVehicle.vue";
+
 </script>
 
 <template>

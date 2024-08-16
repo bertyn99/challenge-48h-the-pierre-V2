@@ -1,7 +1,7 @@
 <script setup>
 import CardStarship from "./CardStarship.vue";
 import { ref, onMounted, computed } from "vue";
-import Starship from "../../service/module/starship";
+import { listStarship } from "../../service/module/starship";
 import Carrousel from "../carrousel/index.vue";
 import Slide from "../carrousel/Slide.vue";
 const starships = ref(null);
@@ -19,11 +19,11 @@ async function loadPages(ressource, count, api) {
   ressource.value = ressource.value.concat(temp);
 }
 onMounted(async () => {
-  let data = await Starship.listStarship();
+  let data = await listStarship();
   starships.value = data.data.results;
   countElm.value = data?.data.count;
 
-  await loadPages(starships, countElm, Starship.listStarship);
+  await loadPages(starships, countElm, listStarship);
 });
 
 const showStarships = computed(() => {
@@ -42,25 +42,12 @@ function clickeOnPeople(idEntered) {
 </script>
 
 <template>
-  <Carrousel
-    v-slot="{ currentSlide }"
-    :getSlideCount="nbSlide"
-    @changeSlide="getChangeSlide"
-  >
+  <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
     <Slide v-for="n in nbSlide" :key="n">
-      <div
-        class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center"
-        v-show="currentSlide === n - 1"
-      >
-        <CardStarship
-          v-for="ship in showStarships"
-          :key="ship"
-          :starship="ship"
-          :pageNumber="pageNumber"
-          @click="
-            clickeOnPeople(ship.url.split('/')[ship.url.split('/').length - 2])
-          "
-        ></CardStarship>
+      <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
+        <CardStarship v-for="ship in showStarships" :key="ship" :starship="ship" :pageNumber="pageNumber" @click="
+          clickeOnPeople(ship.url.split('/')[ship.url.split('/').length - 2])
+          "></CardStarship>
       </div>
     </Slide>
   </Carrousel>

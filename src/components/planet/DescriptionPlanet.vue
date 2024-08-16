@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import Planet from "../../service/module/planet";
+import { getPlanetById } from "../../service/module/planet";
 
 const props = defineProps({
   id: String,
@@ -10,14 +10,14 @@ let loading = ref(true);
 let onePlanet = ref(null);
 
 onMounted(async () => {
-  let data = await Planet.getPlanetById(props.id);
+  let data = await getPlanetById(props.id);
   onePlanet.value = data.data;
   loading.value = false;
 });
 
 watch(async (id) => {
   loading.value = true;
-  let data = await Planet.getPlanetById(props.id);
+  let data = await getPlanetById(props.id);
   onePlanet.value = data.data;
   loading.value = false;
 });
@@ -26,11 +26,8 @@ const urlImg = computed(() => "/src/assets/img/planets/" + props.id + ".png");
 
 <template>
   <div v-if="loading == true">loading</div>
-  <div
-    v-else-if="onePlanet != null"
-    id="planet"
-    class="container px-1 md:px-10 md:py-10 flex flex-col-reverse sm:flex-row justify-between mx-auto"
-  >
+  <div v-else-if="onePlanet != null" id="planet"
+    class="container px-1 md:px-10 md:py-10 flex flex-col-reverse sm:flex-row justify-between mx-auto">
     <div class="sm:w-1/2 flex flex-col justify-end">
       <h2 class="text-[30px] items-center">{{ onePlanet.name }}</h2>
       <ul class="m-2 text-[15px]">
@@ -65,21 +62,25 @@ const urlImg = computed(() => "/src/assets/img/planets/" + props.id + ".png");
   position: relative;
   --font-txt-bg: 5.75rem;
 }
+
 @media screen(sm) {
   #planet {
     --left-position: 55%;
     --font-txt-bg: 6rem;
   }
 }
+
 @media screen(md) {
   #planet {
     --left-position: 50%;
     --font-txt-bg: 7rem;
   }
+
   #planet::after {
     z-index: -3 !important;
   }
 }
+
 #planet::after {
   font-family: "Star Jhol";
   content: "planet";

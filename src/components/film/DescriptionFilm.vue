@@ -1,53 +1,51 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import Film from "../../service/module/film";
-
+import { getFilmById } from "../../service/module/film";
+import { useMutation, useQuery } from '@pinia/colada'
 const props = defineProps({
   id: String,
 });
 
-let loading = ref(true);
-let oneFilm = ref(null);
 
-onMounted(async () => {
-  let data = await Film.getFilmById(props.id);
-  oneFilm.value = data.data;
-  loading.value = false;
-});
 
-watch(async (id) => {
+/* let character = ref(null); */
+const { data: movie, isLoading, refetch, error } = useQuery({
+  // recognizes this query as ['contacts', id]
+  key: () => ['movie', props.id],
+  query: () => getPeopleById(props.id),
+})
+console.log(movie.value);
+console.log(isLoading.value);
+/* watch(async (id) => {
   loading.value = true;
-  let data = await Film.getFilmById(props.id);
-  oneFilm.value = data.data;
+  let data = await getFilmById(props.id);
+  movie.value = data.data;
   loading.value = false;
-});
+}); */
 const urlImg = computed(() => "../src/assets/img/films/" + props.id + ".png");
 </script>
 
 <template>
-  <div v-if="loading == true">loading</div>
-  <div
-    v-else-if="oneFilm != null"
-    id="film"
-    class="max-w-7xl sm:px-6 lg:px-8 flex flex-col-reverse sm:flex-row justify-between mx-auto"
-  >
+  <div v-if="isLoading == true">loading</div>
+  <div v-else-if="movie != null" id="film"
+    class="max-w-7xl sm:px-6 lg:px-8 flex flex-col-reverse sm:flex-row justify-between mx-auto">
     <div class="sm:w-1/2 flex flex-col justify-end">
-      <h2 class="text-[30px] items-center">{{ oneFilm.title }}</h2>
+      <h2 class="text-[30px] items-center">{{ movie.title }}</h2>
       <ul class="m-2 text-[15px]">
-        <li class="m-2" v-if="oneFilm.episode_id != 'n/a'">
-          episode id : {{ oneFilm.episode_id }}
+        <li class="m-2" v-if="movie.episode_id != 'n/a'">
+          episode id : {{ movie.episode_id }}
         </li>
-        <li class="m-2" v-if="oneFilm.opening_crawl != 'n/a'">
-          opening crawl : {{ oneFilm.opening_crawl }}
+        <li class="m-2" v-if="movie.opening_crawl != 'n/a'">
+          opening crawl : {{ movie.opening_crawl }}
         </li>
-        <li class="m-2" v-if="oneFilm.director != 'n/a'">
-          director : {{ oneFilm.director }}
+        <li class="m-2" v-if="movie.director != 'n/a'">
+          director : {{ movie.director }}
         </li>
-        <li class="m-2" v-if="oneFilm.producer != 'n/a'">
-          producer: {{ oneFilm.producer }}
+        <li class="m-2" v-if="movie.producer != 'n/a'">
+          producer: {{ movie.producer }}
         </li>
-        <li class="m-2" v-if="oneFilm.release_date != 'n/a'">
-          release date : {{ oneFilm.release_date }}
+        <li class="m-2" v-if="movie.release_date != 'n/a'">
+          release date : {{ movie.release_date }}
         </li>
       </ul>
     </div>
@@ -60,18 +58,21 @@ const urlImg = computed(() => "../src/assets/img/films/" + props.id + ".png");
   position: relative;
   --font-txt-bg: 5.25rem;
 }
+
 @media screen(sm) {
   #film {
     --left-position: 55%;
     --font-txt-bg: 6rem;
   }
 }
+
 @media screen(md) {
   #film {
     --left-position: 55%;
     --font-txt-bg: 7rem;
   }
 }
+
 #film::after {
   font-family: "Star Jhol";
   content: "films";

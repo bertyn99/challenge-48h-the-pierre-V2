@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import Vehicle from "../../service/module/vehicle";
-
+import { getVehicleById } from "../../service/module/vehicle";
+import { useMutation, useQuery } from '@pinia/colada'
 const props = defineProps({
   id: String,
 });
@@ -10,14 +10,14 @@ let loading = ref(true);
 let oneVehicle = ref(null);
 
 onMounted(async () => {
-  let data = await Vehicle.getVehicleById(props.id);
+  let data = await getVehicleById(props.id);
   oneVehicle.value = data.data;
   loading.value = false;
 });
 
 watch(async (id) => {
   loading.value = true;
-  let data = await Vehicle.getVehicleById(props.id);
+  let data = await getVehicleById(props.id);
   oneVehicle.value = data.data;
   loading.value = false;
 });
@@ -28,11 +28,8 @@ const urlImg = computed(
 
 <template>
   <div v-if="loading == true">loading</div>
-  <div
-    v-else-if="oneVehicle != null"
-    id="vehicle"
-    class="container px-1 md:px-10 md:py-10 flex flex-col-reverse sm:flex-row justify-between mx-auto"
-  >
+  <div v-else-if="oneVehicle != null" id="vehicle"
+    class="container px-1 md:px-10 md:py-10 flex flex-col-reverse sm:flex-row justify-between mx-auto">
     <div class="sm:w-1/2 flex flex-col justify-end">
       <h2 class="text-[30px] items-center">{{ oneVehicle.name }}</h2>
       <ul class="m-2 text-[15px]">
@@ -72,18 +69,21 @@ const urlImg = computed(
 #vehicule {
   position: relative;
 }
+
 @media screen(sm) {
   #vehicule {
     --left-position: 55%;
     --font-txt-bg: 6rem;
   }
 }
+
 @media screen(md) {
   #vehicule {
     --left-position: 55%;
     --font-txt-bg: 7rem;
   }
 }
+
 #vehicule::after {
   font-family: "Star Jhol";
   content: "vehicule";
