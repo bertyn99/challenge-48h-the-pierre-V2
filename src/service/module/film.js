@@ -2,22 +2,34 @@ import apiClient from "../http-common";
 import ChangeUrl from "../ChangeUrl"
 
   const listFilm=async ()=> {
-    let dataGroupes = ["characters","planets","starships","vehicles","species"]
-    let data = await apiClient.get("/films/")
-    data.data["results"]=await ChangeUrl.multiplesUrlToIdAndName(data.data["results"],dataGroupes)
+    try {
+      let dataGroupes = ["characters","planets","starships","vehicles","species"]
+    let res = await apiClient.get("/films/")
+
+   /*  res.data["results"]=await ChangeUrl.multiplesUrlToIdAndName(res.data["results"],dataGroupes)
     for (let i = 0 ; i < data.data.results.length;i++){
-      data.data.results[i]["title"]=data.data.results[i]["title"].toLowerCase()
+      res.data.results[i]["title"]=data.data.results[i]["title"].toLowerCase()
+    } */
+
+    return res.data.results;
+    } catch (error) {
+      throw error;
     }
-    return data;
+    
   }
 
  const getFilmById= async (id)=> {
-    let dataGroupes = ["characters","planets","starships","vehicles","species"]
-    let data = await apiClient.get("/films/" + id)
-    console.log(data.data)
-    data.data["results"]=await ChangeUrl.urlToIdAndName(data.data,dataGroupes)
-    data.data.results["title"]=data.data.results["title"].toLowerCase()
-    return data.data;
+  try {
+     let dataGroupes = ["characters","planets","starships","vehicles","species"]
+    let res = await apiClient.get("/films/" + id)
+    console.log(res)
+    res.data["results"]=await ChangeUrl.urlToIdAndName(res.data,dataGroupes)
+    res.data.results["title"]=res.data.results["title"].toLowerCase()
+    return res.data.results;
+  } catch (error) {
+    throw error;
+  }
+   
   }
 
   const searchFilm=async (searchInput) =>{

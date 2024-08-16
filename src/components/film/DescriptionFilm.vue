@@ -12,9 +12,10 @@ const props = defineProps({
 const { data: movie, isLoading, refetch, error } = useQuery({
   // recognizes this query as ['contacts', id]
   key: () => ['movie', props.id],
-  query: () => getPeopleById(props.id),
+  query: () => getFilmById(props.id),
 })
-console.log(movie.value);
+
+const movieID = computed(() => movie.value?.url.split("/")[movie.value?.url.split("/").length - 2])
 console.log(isLoading.value);
 /* watch(async (id) => {
   loading.value = true;
@@ -26,30 +27,30 @@ const urlImg = computed(() => "../src/assets/img/films/" + props.id + ".png");
 </script>
 
 <template>
-  <div v-if="isLoading == true">loading</div>
-  <div v-else-if="movie != null" id="film"
-    class="max-w-7xl sm:px-6 lg:px-8 flex flex-col-reverse sm:flex-row justify-between mx-auto">
+
+  <div id="film" class="max-w-7xl sm:px-6 lg:px-8 flex flex-col-reverse sm:flex-row justify-between mx-auto">
     <div class="sm:w-1/2 flex flex-col justify-end">
-      <h2 class="text-[30px] items-center">{{ movie.title }}</h2>
+      <h2 class="text-[30px] items-center">{{ movie?.title }}</h2>
       <ul class="m-2 text-[15px]">
-        <li class="m-2" v-if="movie.episode_id != 'n/a'">
-          episode id : {{ movie.episode_id }}
+        <li class="m-2" v-if="movie?.episode_id != 'n/a'">
+          episode id : {{ movie?.episode_id }}
         </li>
-        <li class="m-2" v-if="movie.opening_crawl != 'n/a'">
-          opening crawl : {{ movie.opening_crawl }}
+        <li class="m-2" v-if="movie?.opening_crawl != 'n/a'">
+          opening crawl : {{ movie?.opening_crawl }}
         </li>
-        <li class="m-2" v-if="movie.director != 'n/a'">
-          director : {{ movie.director }}
+        <li class="m-2" v-if="movie?.director != 'n/a'">
+          director : {{ movie?.director }}
         </li>
-        <li class="m-2" v-if="movie.producer != 'n/a'">
-          producer: {{ movie.producer }}
+        <li class="m-2" v-if="movie?.producer != 'n/a'">
+          producer: {{ movie?.producer }}
         </li>
-        <li class="m-2" v-if="movie.release_date != 'n/a'">
-          release date : {{ movie.release_date }}
+        <li class="m-2" v-if="movie?.release_date != 'n/a'">
+          release date : {{ movie?.release_date }}
         </li>
       </ul>
     </div>
-    <img class="sm:w-1/2 max-h-[500px] max-w-[420px]" :src="urlImg" alt="" />
+    <img class="sm:w-1/2 max-h-[500px] max-w-[420px]" :src="urlImg" alt=""
+      :style="{ viewTransitionName: `film-image-${movieID}` }" />
   </div>
 </template>
 

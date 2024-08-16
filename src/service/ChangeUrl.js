@@ -4,10 +4,15 @@ import apiClient from "./http-common";
 export default {
 
   async multiplesUrlToIdAndName(data,dataGroupes){
-    data.forEach(async (item,index)=>{
-      data[index] = await this.urlToIdAndName(item,dataGroupes);
-    });
-    return data;
+    try {
+          data.forEach(async (item, index) => {
+            data[index] = await this.urlToIdAndName(item, dataGroupes);
+          });
+          return data;
+    } catch (error) {
+      throw error;
+    }
+
   },
 
   async urlToIdAndName(data,dataGroupes){

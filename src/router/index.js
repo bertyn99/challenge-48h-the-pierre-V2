@@ -88,7 +88,7 @@ const routes = [
 
   {
     path: "/films",
-    name: "Films",
+    name: "Movie",
     component: Film,
     children: [
       {
@@ -98,6 +98,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionFilm,
+        name:"MovieDetails",
         props: true,
       },
     ],

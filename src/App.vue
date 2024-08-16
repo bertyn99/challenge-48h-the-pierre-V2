@@ -26,6 +26,10 @@ import Navbar from "./components/Navbar.vue";
     url("/font/starjhol.ttf") format("ttf");
 }
 
+@view-transition {
+  navigation: auto;
+}
+
 #app {
   font-family: "Star Jedi";
   -webkit-font-smoothing: antialiased;
