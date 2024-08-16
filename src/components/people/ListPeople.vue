@@ -3,7 +3,7 @@ import CardPeople from "./CardPeople.vue";
 import { onMounted, ref, computed } from "vue";
 import Carrousel from "../carrousel/index.vue";
 import Slide from "../carrousel/Slide.vue";
-import People from "../../service/module/people";
+import { listPeople } from "../../service/module/people";
 const count = ref(0);
 const page = ref(0);
 const emit = defineEmits(["increment"]);
@@ -21,11 +21,11 @@ async function loadPages(ressource, count, api) {
   ressource.value = ressource.value.concat(temp);
 }
 onMounted(async () => {
-  let data = await People.listPeople();
+  let data = await listPeople();
   countElm.value = data?.data.count;
 
   people.value = data.data.results;
-  await loadPages(people, countElm, People.listPeople);
+  await loadPages(people, countElm, listPeople);
 });
 
 const showPeople = computed(() => {
@@ -56,27 +56,14 @@ pageNumber.value = 1;
 </script>
 
 <template>
-  <Carrousel
-    v-slot="{ currentSlide }"
-    :getSlideCount="nbSlide"
-    @changeSlide="getChangeSlide"
-  >
+  <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
     <Slide v-for="n in nbSlide" :key="n">
-      <div
-        class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center"
-        v-show="currentSlide === n - 1"
-      >
-        <CardPeople
-          v-for="person in showPeople"
-          :key="person"
-          :person="person"
-          :pageNumber="pageNumber"
-          @click="
-            clickeOnPeople(
-              person.url.split('/')[person.url.split('/').length - 2]
-            )
-          "
-        ></CardPeople>
+      <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
+        <CardPeople v-for="person in showPeople" :key="person" :person="person" :pageNumber="pageNumber" @click="
+          clickeOnPeople(
+            person.url.split('/')[person.url.split('/').length - 2]
+          )
+          "></CardPeople>
       </div>
     </Slide>
   </Carrousel>

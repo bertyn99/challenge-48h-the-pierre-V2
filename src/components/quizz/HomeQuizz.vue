@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, onMounted, computed } from "vue";
-import People from "../../service/module/people";
+import { listPeople } from "../../service/module/people";
 import Film from "../../service/module/film";
 import planet from "../../service/module/planet";
 import Specie from "../../service/module/specie";
@@ -86,7 +86,7 @@ async function StartGame() {
   state.data.category = category.value;
 
   if (category.value === "people") {
-    await generatElement(People.listPeople);
+    await generatElement(listPeople);
   } else if (category.value === "films") {
     await generatElement(Film.listFilm);
   } else if (category.value === "planets") {
@@ -105,19 +105,12 @@ async function StartGame() {
   <h1>quizz : What is this ?</h1>
   <p class="title">Select a category</p>
   <div class="m-10 h-62 flex justify-center">
-    <div
-      class="truc text-xl m-10 group overflow-hidden"
-      v-for="(category, index) in tabCategories"
-      :key="category"
-      @click="ChooseCat(category)"
-    >
+    <div class="truc text-xl m-10 group overflow-hidden" v-for="(category, index) in tabCategories" :key="category"
+      @click="ChooseCat(category)">
       <button class="h-1/5 wrap-image group-hover:visible category">
         {{ category }}
       </button>
-      <img
-        class="w-full h-4/5 m-5 group-hover:visible filter-none rounded-3xl"
-        :src="urlImg[index]"
-      />
+      <img class="w-full h-4/5 m-5 group-hover:visible filter-none rounded-3xl" :src="urlImg[index]" />
     </div>
   </div>
   <p class="text-base mb-6">Catégorie choisie : {{ category }}</p>
@@ -131,21 +124,26 @@ div.truc:hover {
   border-radius: 100px;
   transform: scale(1.2);
 }
+
 button :active {
   background-color: yellow;
 }
+
 h1 {
   font-size: 100px;
   margin: 50px;
 }
+
 p.title {
   margin: 50px;
   font-size: 50px;
 }
+
 .wrap-image {
   position: relative;
   padding: 1px 8px;
 }
+
 .wrap-image::before,
 .wrap-image::after {
   content: "";
@@ -156,20 +154,24 @@ p.title {
   border: 2px solid blue;
   transition: all 0.25s ease-out;
 }
+
 .wrap-image::before {
   background-color: #ff0000;
   top: -1px;
   left: -1px;
   opacity: 35%;
 }
+
 .wrap-image::after {
   bottom: -1px;
   right: -1px;
 }
+
 .wrap-image:hover::before {
   top: 5px;
   left: 5px;
 }
+
 .wrap-image:hover::after {
   bottom: 5px;
   right: 5px;

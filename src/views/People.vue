@@ -2,7 +2,6 @@
 import DescriptionPeople from "../components/people/DescriptionPeople.vue";
 import CardPeople from "../components/people/CardPeople.vue";
 import ListPeople from "../components/people/ListPeople.vue";
-import People from "../service/module/people";
 import { ref, onMounted } from "vue";
 </script>
 <template>
