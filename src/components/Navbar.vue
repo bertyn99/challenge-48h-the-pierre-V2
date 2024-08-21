@@ -5,7 +5,7 @@ const isMobile = ref(false);
 </script>
 
 <template>
-  <div class="m-10">
+  <div class="mt-2 mb-4">
     <!-- desktop nav -->
     <div class="hidden md:block">
       <router-link to="/" class="wrap-image text-md m-10">home</router-link>
