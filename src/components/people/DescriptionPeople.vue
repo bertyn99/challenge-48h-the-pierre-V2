@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { getPeopleById } from "../../service/module/people";
-import { useMutation, useQuery } from '@pinia/colada'
+import { useQuery } from '@pinia/colada'
 const props = defineProps({
   id: String,
 });
@@ -14,14 +14,7 @@ const { data: character, isLoading, refetch, error } = useQuery({
   query: () => getPeopleById(props.id),
 })
 
-console.log(character.value);
 
-/* onMounted(async () => {
-  let data = await People.getPeopleById(props.id);
-  character.value = data.data;
-  loading.value = false;
-});
- */
 /* watch(async (id) => {
   isLoading.value = true;
   let data = await getPeopleById(props.id);
@@ -41,13 +34,13 @@ const urlImg = computed(
       <ul class="m-2 text-[15px]">
         <li class="m-2">Height : {{ '??' }}</li>
         <li class="m-2">Mass : {{ '??' }}</li>
-        <li class="m-2" v-if="character.hair_color != 'n/a'">
+        <li class="m-2" v-if="character?.hair_color != 'n/a'">
           Hair Color : {{ '??' }}
         </li>
         <li class="m-2">Skin Color : {{ '??' }}</li>
         <li class="m-2">Eye Color : {{ '??' }}</li>
         <li class="m-2">BirthYear : {{ '??' }}</li>
-        <li class="m-2" v-if="character.gender != 'n/a'">
+        <li class="m-2" v-if="character?.gender != 'n/a'">
           Gender : {{ '??' }}
         </li>
         <li class="m-2">Home World : {{ '??' }}</li>
@@ -81,6 +74,7 @@ const urlImg = computed(
 <style scoped>
 #character {
   position: relative;
+  overflow: hidden;
   --left-position: 0%;
   --font-txt-bg: 4rem;
 }
