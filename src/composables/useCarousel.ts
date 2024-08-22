@@ -1,7 +1,7 @@
 import { createInjectionState } from "@vueuse/core";
 import emblaCarouselVue from "embla-carousel-vue";
 import { onMounted, ref } from "vue";
-import {
+import type {
   CarouselEmits,
   CarouselProps,
   UnwrapRefCarouselApi as CarouselApi,

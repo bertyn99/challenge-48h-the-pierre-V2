@@ -17,15 +17,9 @@ let imgUrl = computed(
 
 <template>
   <router-link :to="urlStarship">
-    <div
-      v-if="starship != null"
-      class="group w-32 h-64 pt-2 m-2 overflow-hidden"
-    >
-      <img
-        :src="imgUrl"
-        class="object-cover w-full h-3/4 transition-all delay-150 hover:-translate-y-1 hover:scale-110"
-        alt=""
-      />
+    <div v-if="starship != null" class="group w-32 h-64 pt-2 m-2 overflow-hidden">
+      <img :src="imgUrl"
+        class="object-contain w-full h-3/4 transition-all delay-150 hover:-translate-y-1 hover:scale-110" alt="" />
       <p class="h-1/4 invisible group-hover:visible text-sm">
         {{ starship.name }}
       </p>
@@ -49,11 +43,13 @@ img {
   -o-transition: all 0.2s;
   transition: all 0.2s;
 }
+
 img:hover {
   background-color: black;
   filter: grayscale(0);
   transform: scale(1.2);
 }
+
 div:hover {
   background-color: black;
   border: 2px solid yellow;

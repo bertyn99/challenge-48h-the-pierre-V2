@@ -1,50 +1,44 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { getSpecieById } from "../../service/module/specie";
+import { useQuery } from '@pinia/colada'
 
 const props = defineProps({
   id: String,
 });
 
-let loading = ref(true);
-let oneSpecie = ref(null);
 
-onMounted(async () => {
-  let data = await getSpecieById(props.id);
-  oneSpecie.value = data.data;
-  loading.value = false;
-});
+const { data: specie, isLoading, refetch, error } = useQuery({
+  // recognizes this query as ['contacts', id]
+  key: () => ['specie', props.id],
+  query: () => getSpecieById(props.id),
+})
 
-watch(async (id) => {
-  loading.value = true;
-  let data = await getSpecieById(props.id);
-  oneSpecie.value = data.data;
-  loading.value = false;
-});
+console.log(specie.value);
 const urlImg = computed(() => "../src/assets/img/species/" + props.id + ".png");
 </script>
 
 <template>
-  <div v-if="loading == true">loading</div>
-  <div v-else-if="oneSpecie != null" id="specie"
+  <div v-if="isLoading == true">...Loading</div>
+  <div v-else-if="specie != null" id="specie"
     class="container px-1 md:px-10 md:py-10 flex flex-col-reverse sm:flex-row justify-between mx-auto">
     <div class="sm:w-1/2 flex flex-col justify-end">
-      <h2 class="text-[30px] items-center">{{ oneSpecie.name }}</h2>
+      <h2 class="text-[30px] items-center">{{ specie?.name }}</h2>
       <ul class="m-2 text-[15px]">
-        <li class="m-2">classification : {{ oneSpecie.classification }}</li>
-        <li class="m-2">designation : {{ oneSpecie.designation }}</li>
-        <li class="m-2" v-if="oneSpecie.average_height != 'n/a'">
-          average height : {{ oneSpecie.average_height }}
+        <li class="m-2">classification : {{ specie?.classification }}</li>
+        <li class="m-2">designation : {{ specie?.designation }}</li>
+        <li class="m-2" v-if="specie?.average_height != 'n/a'">
+          average height : {{ specie?.average_height }}
         </li>
-        <li class="m-2">Skin Colors : {{ oneSpecie.skin_colors }}</li>
-        <li class="m-2">Hair Colors : {{ oneSpecie.hair_colors }}</li>
+        <li class="m-2">Skin Colors : {{ specie?.skin_colors }}</li>
+        <li class="m-2">Hair Colors : {{ specie?.hair_colors }}</li>
 
-        <li class="m-2">Eye Colors : {{ oneSpecie.eye_colors }}</li>
-        <li class="m-2">average lifespan : {{ oneSpecie.average_lifespan }}</li>
-        <li class="m-2" v-if="oneSpecie.language != 'n/a'">
-          language : {{ oneSpecie.language }}
+        <li class="m-2">Eye Colors : {{ specie?.eye_colors }}</li>
+        <li class="m-2">average lifespan : {{ specie?.average_lifespan }}</li>
+        <li class="m-2" v-if="specie?.language != 'n/a'">
+          language : {{ specie?.language }}
         </li>
-        <li class="m-2">Home World : {{ oneSpecie.homeworld.name }}</li>
+        <li class="m-2">Home World : {{ specie?.homeworld?.name }}</li>
       </ul>
     </div>
     <img class="max-h-[500px] max-w-[420px]" :src="urlImg" alt="" />

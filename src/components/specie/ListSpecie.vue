@@ -1,90 +1,66 @@
-<script setup>
+<script setup lang="ts">
 import CardSpecie from "./CardSpecie.vue";
-import { ref, onMounted, computed } from "vue";
-import { listSpecies } from "../../service/module/specie";
+import { ref, watch } from "vue";
 import Carrousel from "../carrousel/index.vue";
+import CarrouselContent from "../carrousel/Content.vue";
+import CarrouselControls from "../carrousel/Controls.vue";
 import Slide from "../carrousel/Slide.vue";
-let species = ref(null);
-let count = ref(null);
-onMounted(async () => {
-  let data = await listSpecies();
-  count.value = data?.data.count;
-  species.value = data.data.results;
-  let tab1 = await listSpecies(2);
-  let tab2 = await listSpecies(2);
-  species.value = species.value.concat(tab1.data.results, tab2.data.results);
-});
-const page = ref(0);
+import { listSpecies } from "../../service/module/specie";
+import { useQuery } from '@pinia/colada';
+import { UnwrapRefCarouselApi as CarouselApi } from "../../types/carousel";
+import { watchOnce } from "@vueuse/core";
 
-const showSpecie = computed(() => {
-  if (page.value == 0) return species.value?.slice(page, 10);
-  return species.value?.slice(page.value * 10 - 1, page.value * 10 + 10);
-});
-const nbSlide = computed(() =>
-  Math.floor(count.value / 10)
-);
+const page = ref(1);
+const emit = defineEmits(["increment"]);
 
-const showSpecie1 = computed(() => {
-  return species.value?.slice(5, 10);
+const api = ref<CarouselApi>();
+const totalCount = ref(0);
+const current = ref(0);
+const accSpecies = ref([]);
+
+const { data: species, isLoading, refetch, error } = useQuery({
+  key: () => ['species', { page: page.value }],
+  query: () => listSpecies(page.value),
 });
 
-const carrouselSlide = ref([1, 2, 3]);
-function getChangeSlide(slide) {
-  page.value = slide;
+function setApi(val: CarouselApi) {
+  api.value = val;
 }
+
+watch(page, (newVal, oldVal) => {
+  refetch();
+});
+
+watch(species, (newVal, oldVal) => {
+  if (newVal) {
+    accSpecies.value = [...accSpecies.value, ...newVal.results];
+    totalCount.value = newVal.count;
+  }
+});
+
+watchOnce(api, (api) => {
+  if (!api) return;
+  current.value = api.selectedScrollSnap() + 1;
+
+  api.on('select', () => {
+    current.value = api.selectedScrollSnap() + 1;
+    if (current.value + 4 >= accSpecies.value.length) {
+      page.value += 1;
+    }
+  });
+});
+
 </script>
 
 <template>
-  <!-- <div class="container w-full p-3 mx-auto flex justify-center">
-    <button @click="changeSlide(-1)">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 19l-7-7m0 0l7-7m-7 7h18"
-        />
-      </svg>
-      prev
-    </button>
-
-    <CardSpecie
-      v-for="specie in showSpecie"
-      :key="specie"
-      :spec="specie"
-    ></CardSpecie>
-    <button @click="changeSlide(1)">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M14 5l7 7m0 0l-7 7m7-7H3"
-        />
-      </svg>
-      next
-    </button>
-  </div> -->
-
-  <div>
-    <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
-      <Slide v-for="n in nbSlide" :key="n">
-        <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
-          <CardSpecie v-for="specie in showSpecie" :key="specie" :spec="specie"></CardSpecie>
+  <Carrousel :opts="{ align: 'start' }" @init-api="setApi">
+    <CarrouselContent>
+      <Slide v-for="specie in accSpecies" :key="specie.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5">
+        <div class="p-1">
+          <CardSpecie :spec="specie"></CardSpecie>
         </div>
       </Slide>
-    </Carrousel>
-  </div>
+    </CarrouselContent>
+    <CarrouselControls></CarrouselControls>
+  </Carrousel>
 </template>
