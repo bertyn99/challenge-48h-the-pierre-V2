@@ -33,6 +33,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionPeople,
+        name: "PeopleDetails",
         props: true,
       },
     ],
@@ -49,6 +50,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionSpecie,
+        name: "SpecieDetails",
         props: true,
       },
     ],
@@ -65,6 +67,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionStarship,
+        name: "StarshipDetails",
         props: true,
       },
     ],
@@ -81,6 +84,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionPlanet,
+        name: "PlanetDetails",
         props: true,
       },
     ],
@@ -115,6 +119,7 @@ const routes = [
       {
         path: ":id",
         component: DescriptionVehicle,
+        name: "VehicleDetails",
         props: true,
       },
     ],

@@ -1,57 +1,67 @@
-<script setup>
+<script setup lang="ts">
 import CardPlanet from "./CardPlanet.vue";
-import { ref, onMounted, computed } from "vue";
-import { listPlanet } from "../../service/module/planet";
+import { onMounted, ref, computed, watch, nextTick } from "vue";
 import Carrousel from "../carrousel/index.vue";
+import CarrouselContent from "../carrousel/Content.vue";
+import CarrouselControls from "../carrousel/Controls.vue";
 import Slide from "../carrousel/Slide.vue";
-let planets = ref(null);
-let countElm = ref(null);
-let pageNumber = ref(null);
-const page = ref(0);
-pageNumber.value = 1;
-async function loadPages(ressource, count, api) {
-  let temp = [];
-  for (let i = 2; i < Math.floor(count.value / 10); i++) {
-    let tab = await api(i);
+import { listPlanets } from "../../service/module/planet.js";
+import { useQuery } from '@pinia/colada';
+import { UnwrapRefCarouselApi as CarouselApi } from "../../types/carousel";
+import { watchOnce } from "@vueuse/core";
 
-    temp = temp.concat(tab.data.results);
+const page = ref(1);
+const emit = defineEmits(["increment"]);
+
+const api = ref<CarouselApi>();
+const totalCount = ref(0);
+const current = ref(0);
+const accPlanets = ref([]);
+
+const { data: planets, isLoading, refetch, error } = useQuery({
+  key: () => ['planets', { page: page.value }],
+  query: () => listPlanets(page.value),
+});
+
+function setApi(val: CarouselApi) {
+  api.value = val;
+}
+
+watch(page, (newVal, oldVal) => {
+  refetch();
+});
+
+watch(planets, (newVal, oldVal) => {
+  if (newVal) {
+    accPlanets.value = [...accPlanets.value, ...newVal.results];
+    totalCount.value = newVal.count;
   }
-
-  ressource.value = ressource.value.concat(temp);
-}
-onMounted(async () => {
-  let data = await listPlanet();
-  countElm.value = data?.data.count;
-  planets.value = data.data.results;
-
-  await loadPages(planets, countElm, listPlanet);
 });
 
-const showPlanets = computed(() => {
-  if (page.value == 0) return planets.value?.slice(page, 10);
-  return planets.value?.slice(page.value * 10 - 1, page.value * 10 + 9);
-});
-const nbSlide = computed(() => Math.floor(countElm.value / 10));
+watchOnce(api, (api) => {
+  if (!api) return;
+  current.value = api.selectedScrollSnap() + 1;
 
-function getChangeSlide(slide) {
-  page.value = slide;
-}
-function clickeOnPeople(idEntered) {
-  id.value = idEntered;
-  emit("increment", id.value);
-}
+  api.on('select', () => {
+    current.value = api.selectedScrollSnap() + 1;
+    if (current.value + 4 >= accPlanets.value.length) {
+      page.value += 1;
+    }
+  });
+});
+
+
 </script>
 
 <template>
-  <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
-    <Slide v-for="n in nbSlide" :key="n">
-      <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
-        <CardPlanet v-for="planet in showPlanets" :key="planet" :planet="planet" :pageNumber="pageNumber" @click="
-          clickeOnPeople(
-            planet.url.split('/')[planet.url.split('/').length - 2]
-          )
-          "></CardPlanet>
-      </div>
-    </Slide>
+  <Carrousel :opts="{ align: 'start' }" @init-api="setApi">
+    <CarrouselContent>
+      <Slide v-for="planet in accPlanets" :key="planet.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5">
+        <div class="p-1">
+          <CardPlanet :planet="planet"></CardPlanet>
+        </div>
+      </Slide>
+    </CarrouselContent>
+    <CarrouselControls></CarrouselControls>
   </Carrousel>
 </template>

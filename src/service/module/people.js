@@ -9,7 +9,9 @@ import ChangeUrl from "../ChangeUrl"
     for (let i = 0 ; i < data.data.results.length;i++){
       data.data.results[i]["name"]=data.data.results[i]["name"].toLowerCase()
     }
-    return data;
+
+
+    return data.data;
   }
 
   const getPeopleById = async (id) => {
@@ -25,7 +27,7 @@ import ChangeUrl from "../ChangeUrl"
     let data = await apiClient.get("/people/?search=" + searchInput)
     data.data["results"] = await ChangeUrl.urlToIdAndName(data.data["results"][0], dataGroupes)
     data.data.results["name"] = data.data.results["name"].toLowerCase()
-    return data;
+    return data.data;
   }
 
 

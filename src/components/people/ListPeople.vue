@@ -81,15 +81,11 @@ watchOnce(api, (api) => {
     <CarrouselContent>
       <Slide v-for="person in accPepole" :key="person.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5 ">
         <div class="p-1">
-          <CardPeople :person="person" @click="
-            clickeOnPeople(
-              person.url.split('/')[person.url.split('/').length - 2]
-            )
-            "></CardPeople>
+          <CardPeople :person="person"></CardPeople>
         </div>
       </Slide>
     </CarrouselContent>
     <CarrouselControls></CarrouselControls>
   </Carrousel>
-  {{ current }} / {{ totalCount }}
+
 </template>

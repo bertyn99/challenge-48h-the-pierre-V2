@@ -1,53 +1,67 @@
-<script setup>
+<script setup lang="ts">
 import CardVehicle from "./CardVehicle.vue";
-import { ref, onMounted, computed } from "vue";
-import { listVehicle } from "../../service/module/vehicle";
+import { ref, watch } from "vue";
 import Carrousel from "../carrousel/index.vue";
+import CarrouselContent from "../carrousel/Content.vue";
+import CarrouselControls from "../carrousel/Controls.vue";
 import Slide from "../carrousel/Slide.vue";
-let vehicles = ref(null);
-const countElm = ref(null);
-const pageNumber = ref(null);
-const page = ref(0);
-pageNumber.value = 1;
-async function loadPages(ressource, count, api) {
-  let temp = [];
-  for (let i = 2; i < Math.floor(count.value / 10); i++) {
-    let tab = await api(i);
+import { listVehicles } from "../../service/module/vehicle";
+import { useQuery } from '@pinia/colada';
+import { UnwrapRefCarouselApi as CarouselApi } from "../../types/carousel";
+import { watchOnce } from "@vueuse/core";
 
-    temp = temp.concat(tab.data.results);
+const page = ref(1);
+const emit = defineEmits(["increment"]);
+
+const api = ref<CarouselApi>();
+const totalCount = ref(0);
+const current = ref(0);
+const accVehicles = ref([]);
+
+const { data: vehicles, isLoading, refetch, error } = useQuery({
+  key: () => ['vehicles', { page: page.value }],
+  query: () => listVehicles(page.value),
+});
+
+function setApi(val: CarouselApi) {
+  api.value = val;
+}
+
+watch(page, (newVal, oldVal) => {
+  refetch();
+});
+
+watch(vehicles, (newVal, oldVal) => {
+  if (newVal) {
+    accVehicles.value = [...accVehicles.value, ...newVal.results];
+    totalCount.value = newVal.count;
   }
-  ressource.value = ressource.value.concat(temp);
-}
-onMounted(async () => {
-  let data = await listVehicle();
-  vehicles.value = data.data.results;
-  countElm.value = data?.data.count;
-
-  await loadPages(vehicles, countElm, listVehicle);
 });
-const showVehicles = computed(() => {
-  if (page.value == 0) return vehicles.value?.slice(page, 10);
-  return vehicles.value?.slice(page.value * 10 - 1, page.value * 10 + 9);
-});
-const nbSlide = computed(() => Math.floor(countElm.value / 10));
 
-function getChangeSlide(slide) {
-  page.value = slide;
-}
-function clickeOnPeople(idEntered) {
-  id.value = idEntered;
-  emit("increment", id.value);
-}
+watchOnce(api, (api) => {
+  if (!api) return;
+  current.value = api.selectedScrollSnap() + 1;
+
+  api.on('select', () => {
+    current.value = api.selectedScrollSnap() + 1;
+    if (current.value + 4 >= accVehicles.value.length) {
+      page.value += 1;
+    }
+  });
+});
+
+
 </script>
 
 <template>
-  <Carrousel v-slot="{ currentSlide }" :getSlideCount="nbSlide" @changeSlide="getChangeSlide">
-    <Slide v-for="n in nbSlide" :key="n">
-      <div class="absolute top-0 left-0 w-full max-h-full h-full flex justify-center" v-show="currentSlide === n - 1">
-        <CardVehicle v-for="vehi in showVehicles" :key="vehi" :vehicle="vehi" :pageNumber="pageNumber" @click="
-          clickeOnPeople(vehi.url.split('/')[vehi.url.split('/').length - 2])
-          "></CardVehicle>
-      </div>
-    </Slide>
+  <Carrousel :opts="{ align: 'start' }" @init-api="setApi">
+    <CarrouselContent>
+      <Slide v-for="vehicle in accVehicles" :key="vehicle.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5">
+        <div class="p-1">
+          <CardVehicle :vehicle="vehicle"></CardVehicle>
+        </div>
+      </Slide>
+    </CarrouselContent>
+    <CarrouselControls></CarrouselControls>
   </Carrousel>
 </template>

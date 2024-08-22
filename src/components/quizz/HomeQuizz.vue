@@ -2,10 +2,10 @@
 import { ref, inject, onMounted, computed } from "vue";
 import { listPeople } from "../../service/module/people";
 import { listFilm } from "../../service/module/film";
-import { listPlanet } from "../../service/module/planet";
+import { listPlanets } from "../../service/module/planet";
 import { listSpecies } from "../../service/module/specie";
-import { listVehicle } from "../../service/module/vehicle";
-import { listStarship } from "../../service/module/starship";
+import { listVehicles } from "../../service/module/vehicle";
+import { listStarships } from "../../service/module/starship";
 
 const tabCategories = ref();
 tabCategories.value = [

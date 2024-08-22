@@ -1,14 +1,14 @@
 import apiClient from "../http-common";
 import ChangeUrl from "../ChangeUrl"
 
-const listPlanet = async (page = 1) => {
+const listPlanets = async (page = 1) => {
   let dataGroupes = ["films","residents"];
   let data = await apiClient.get("/planets/?page=" + page);
   data.data["results"] = await ChangeUrl.multiplesUrlToIdAndName(data.data["results"], dataGroupes);
   for (let i = 0; i < data.data.results.length; i++) {
     data.data.results[i]["name"] = data.data.results[i]["name"].toLowerCase();
   }
-  return data;
+  return data.data;
 };
 
 const getPlanetById = async (id) => {
@@ -28,7 +28,7 @@ const searchPlanet = async (searchInput) => {
 };
 
 export  {
-  listPlanet,
+  listPlanets,
   getPlanetById,
   searchPlanet
 };

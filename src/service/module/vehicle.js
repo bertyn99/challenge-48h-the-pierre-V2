@@ -2,14 +2,14 @@ import apiClient from "../http-common";
 import ChangeUrl from "../ChangeUrl"
 
 
-  const  listVehicle=async (page = 1)=> {
+  const  listVehicles=async (page = 1)=> {
     let dataGroupes = ["films","pilots"]
     let data = await apiClient.get("/vehicles/?page=" + page)
     data.data["results"]=await ChangeUrl.multiplesUrlToIdAndName(data.data["results"],dataGroupes)
     for (let i = 0 ; i < data.data.results.length;i++){
       data.data.results[i]["name"]=data.data.results[i]["name"].toLowerCase()
     }
-    return data;
+    return data.data;
   }
 
    const  getVehicleById =async(id)=> {
@@ -28,5 +28,5 @@ import ChangeUrl from "../ChangeUrl"
     return data;
   }
 
-  export { listVehicle, getVehicleById, searchVehicle };
+  export { listVehicles, getVehicleById, searchVehicle };
 
