@@ -22,7 +22,7 @@ const { data: character, isLoading, refetch, error } = useQuery({
   isLoading.value = false;
 }); */
 const urlImg = computed(
-  () => "/src/assets/img/characters/" + props.id + ".png"
+  () => new URL("/src/assets/img/characters/" + props.id + ".png", import.meta.url).href
 );
 </script>
 

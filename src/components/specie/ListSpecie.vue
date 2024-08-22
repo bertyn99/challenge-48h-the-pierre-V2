@@ -54,8 +54,8 @@ watchOnce(api, (api) => {
 
 <template>
   <Carrousel :opts="{ align: 'start' }" @init-api="setApi">
-    <CarrouselContent>
-      <Slide v-for="specie in accSpecies" :key="specie.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5">
+    <CarrouselContent class="-ml-4">
+      <Slide v-for="specie in accSpecies" :key="specie.id" class="basis-1/2 md:basis-1/3 lg:basis-1/5 pl-4">
         <div class="p-1">
           <CardSpecie :spec="specie"></CardSpecie>
         </div>

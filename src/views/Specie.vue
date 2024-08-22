@@ -8,11 +8,11 @@ import DescriptionSpecie from "../components/specie/DescriptionSpecie.vue";
 </script>
 
 <template>
-  <div class="container">
-    <router-view :id="$route.params.id"></router-view>
-    <!-- <DescriptionSpecie></DescriptionSpecie> -->
-    <ListSpecie />
-  </div>
+
+  <router-view :id="$route.params.id"></router-view>
+  <!-- <DescriptionSpecie></DescriptionSpecie> -->
+  <ListSpecie />
+
 </template>
 
 <style></style>

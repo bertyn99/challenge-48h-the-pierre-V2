@@ -19,7 +19,7 @@ const { data: planet, isLoading, refetch, error } = useQuery({
 
 
 
-const urlImg = computed(() => "/src/assets/img/planets/" + props.id + ".png");
+const urlImg = computed(() => new URL("../../assets/img/planets/" + props.id + ".png", import.meta.url).href);
 </script>
 
 <template>

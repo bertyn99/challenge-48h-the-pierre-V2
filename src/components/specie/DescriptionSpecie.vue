@@ -15,7 +15,7 @@ const { data: specie, isLoading, refetch, error } = useQuery({
 })
 
 console.log(specie.value);
-const urlImg = computed(() => "../src/assets/img/species/" + props.id + ".png");
+const urlImg = computed(() => new URL("../../assets/img/species/" + props.id + ".png", import.meta.url).href);
 </script>
 
 <template>
@@ -41,7 +41,7 @@ const urlImg = computed(() => "../src/assets/img/species/" + props.id + ".png");
         <li class="m-2">Home World : {{ specie?.homeworld?.name }}</li>
       </ul>
     </div>
-    <img class="max-h-[500px] max-w-[420px]" :src="urlImg" alt="" />
+    <img class="sm:w-1/2 max-h-[30vh] md:max-h-[55vh] max-w-[420px] aspect-[8/11] " :src="urlImg" alt="" />
   </div>
 </template>
 
