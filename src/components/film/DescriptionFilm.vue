@@ -23,7 +23,8 @@ console.log(isLoading.value);
   movie.value = data.data;
   loading.value = false;
 }); */
-const urlImg = computed(() => new URL("../src/assets/img/films/" + props.id + ".png", import.meta.url).href);
+const urlImg = computed(() => new URL(`../../assets/img/films/${props.id}.png`, import.meta.url).href);
+console.log(urlImg.value);
 </script>
 
 <template>

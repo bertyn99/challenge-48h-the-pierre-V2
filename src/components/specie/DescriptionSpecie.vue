@@ -15,7 +15,7 @@ const { data: specie, isLoading, refetch, error } = useQuery({
 })
 
 console.log(specie.value);
-const urlImg = computed(() => new URL("../../assets/img/species/" + props.id + ".png", import.meta.url).href);
+const urlImg = computed(() => new URL(`../../assets/img/species/${props.id}.png`, import.meta.url).href);
 </script>
 
 <template>

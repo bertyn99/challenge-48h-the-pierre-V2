@@ -22,7 +22,7 @@ watch(async (id) => {
   loading.value = false;
 });
 const urlImg = computed(
-  () => new URL("../src/assets/img/vehicles/" + props.id + ".png", import.meta.url).href
+  () => new URL(`../../assets/img/vehicles/${props.id}.png`, import.meta.url).href
 );
 </script>
 

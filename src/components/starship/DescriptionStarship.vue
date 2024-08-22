@@ -22,7 +22,7 @@ watch(async (id) => {
   loading.value = false;
 });
 const urlImg = computed(
-  () => new URL("../src/assets/img/starships/" + props.id + ".png", import.meta.url).href
+  () => new URL(`../../assets/img/starships/${props.id}.png`, import.meta.url).href
 );
 </script>
 

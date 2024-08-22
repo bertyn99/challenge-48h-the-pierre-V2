@@ -12,7 +12,7 @@ urlStarship.value = "/starships/" + starshipID.value;
 
 let imgUrl = computed(() => {
   try {
-    return new URL(`../../assets/img/planets/${starshipID.value}.png`, import.meta.url).href;
+    return new URL(`../../assets/img/starships/${starshipID.value}.png`, import.meta.url).href;
   } catch (error) {
     console.error('Error loading image:', error);
     return null; // or a default image URL
