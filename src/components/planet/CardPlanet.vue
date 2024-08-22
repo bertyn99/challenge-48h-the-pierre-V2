@@ -10,9 +10,14 @@ planetID.value =
 let urlPlanet = ref(null);
 urlPlanet.value = "/planets/" + planetID.value;
 
-let imgUrl = computed(
-  () => "/src/assets/img/planets/" + planetID.value + ".png"
-);
+let imgUrl = computed(() => {
+  try {
+    return new URL(`../../assets/img/planets/${planetID.value}.png`, import.meta.url).href;
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null; // or a default image URL
+  }
+});
 </script>
 
 <template>

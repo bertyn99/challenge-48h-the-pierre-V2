@@ -10,7 +10,14 @@ const filmID = computed(() => prop.film.url.split("/")[prop.film.url.split("/").
 let urlFilm = ref(null);
 urlFilm.value = "/films/" + filmID.value;
 
-let imgUrl = computed(() => "../src/assets/img/films/" + filmID.value + ".png");
+let imgUrl = computed(() => {
+  try {
+    return new URL(`../../assets/img/films/${filmID.value}.png`, import.meta.url).href;
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null; // or a default image URL
+  }
+});
 
 const navigateToFilm = (id) => {
   if (document.startViewTransition) {

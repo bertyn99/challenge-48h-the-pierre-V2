@@ -11,9 +11,14 @@ vehicleID.value =
 let urlVehicle = ref(null);
 urlVehicle.value = "/vehicles/" + vehicleID.value;
 
-let imgUrl = computed(
-  () => "../src/assets/img/vehicles/" + vehicleID.value + ".png"
-);
+let imgUrl = computed(() => {
+  try {
+    return new URL(`../../assets/img/vehicles/${vehicleID.value}.png`, import.meta.url).href;
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null; // or a default image URL
+  }
+});
 </script>
 
 <template>

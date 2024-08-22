@@ -1,15 +1,23 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const props = defineProps({
   person: Object,
 });
+const personID = computed(() =>
+  props.person.url.split("/")[props.person.url.split("/").length - 2]
+);
+console.log("personID:", personID.value);
 
-let personID = ref();
-personID.value =
-  props.person.url.split("/")[props.person.url.split("/").length - 2];
-let urlImg = ref(null);
-urlImg.value = "/src/assets/img/characters/" + personID.value + ".png";
+const urlImg = computed(() => {
+  try {
+    return new URL(`../../assets/img/characters/${personID.value}.png`, import.meta.url).href;
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null; // or a default image URL
+  }
+});
 
+console.log(urlImg.value);
 let urlPeople = ref(null);
 urlPeople.value = "/people/" + personID.value;
 </script>
