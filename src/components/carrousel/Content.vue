@@ -6,7 +6,7 @@ defineOptions({
     inheritAttrs: false,
 })
 
-const props = defineProps<WithClassAsProps>()
+
 
 const { carouselRef, orientation } = useCarousel()
 </script>
@@ -15,7 +15,7 @@ const { carouselRef, orientation } = useCarousel()
 
 
 
-        <div class="flex -ml-4 " v-bind="$attrs">
+        <div class="flex" v-bind="$attrs">
             <slot />
         </div>
 
